@@ -1006,12 +1006,14 @@
         // Function to show/hide login modal
         function showLoginModal() {
             loginModal.classList.remove('hidden');
+            console.log("Login modal shown.");
         }
 
         function hideLoginModal() {
             loginModal.classList.add('hidden');
             loginMessage.classList.add('hidden');
             loginMessage.textContent = '';
+            console.log("Login modal hidden.");
         }
 
         // Handle Email/Password Login
@@ -1062,11 +1064,18 @@
 
         // Auth State Change Listener - Centralized User Profile Management
         onAuthStateChanged(auth, async (user) => {
+            console.log("Auth state changed. User:", user ? user.uid : "null");
             if (user) {
                 currentUserId = user.uid;
                 userIdDisplay.textContent = `User ID: ${currentUserId}`;
                 loggedInUserName.textContent = user.displayName || user.email || 'Authenticated User';
                 sidebarUserName.textContent = user.displayName || user.email || 'Authenticated User';
+
+                // Immediately attempt to hide login modal and show main content
+                // even before profile data is fetched, to prevent "stuck" screen
+                hideLoginModal();
+                mainContent.classList.remove('hidden');
+                console.log("Main content shown for authenticated user.");
 
                 const userProfileDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/profile/data/userProfile`);
                 try {
@@ -1091,13 +1100,14 @@
 
                 } catch (error) {
                     console.error('Error managing user profile in Firestore:', error);
-                    // Fallback in case of Firestore error, still show main content
+                    // Fallback in case of Firestore error, still show main content but log error
                     currentUserRole = 'student'; // Assume student role on error
                     sidebarUserRole.textContent = 'Student (Error)';
+                    // Ensure login modal is hidden and main content is visible even if profile fetch fails
+                    hideLoginModal();
+                    mainContent.classList.remove('hidden');
                 }
 
-                hideLoginModal();
-                mainContent.classList.remove('hidden'); // Show main content
             } else {
                 currentUserId = null;
                 currentUserRole = null;
@@ -1106,6 +1116,7 @@
                 sidebarUserName.textContent = 'Guest User';
                 sidebarUserRole.textContent = 'Not Logged In';
                 mainContent.classList.add('hidden'); // Hide main content
+                console.log("Main content hidden for unauthenticated user.");
                 showLoginModal(); // Show login modal if not authenticated
             }
         });
