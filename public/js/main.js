@@ -2,6 +2,8 @@
 
 // Import necessary variables and functions from auth.js
 import { auth, currentUserId, currentUserRole } from './auth.js';
+// Import setup function for admin portal
+import { setupAdminPortal } from './admin-portal.js';
 
 // DOM Elements for general UI
 const sidebarToggle = document.getElementById('sidebarToggle');
@@ -13,7 +15,7 @@ const portalCards = document.querySelectorAll('.portal-card');
 const studentPortalModal = document.getElementById('studentPortalModal');
 const parentPortalModal = document.getElementById('parentPortalModal');
 const teacherPortalModal = document.getElementById('teacherPortalModal');
-const adminPortalModal = document.getElementById('adminPortalModal');
+const adminPortalModal = document.getElementById('adminPortalModal'); // Ensure this is correctly referenced
 
 const closeStudentPortal = document.getElementById('closeStudentPortal');
 const closeParentPortal = document.getElementById('closeParentPortal');
@@ -108,6 +110,8 @@ if (portalCards.length > 0) {
                     teacherPortalModal.classList.remove('hidden');
                 } else if (portal === 'admin' && adminPortalModal) {
                     adminPortalModal.classList.remove('hidden');
+                    // Call the setup function for Admin Portal when it's opened
+                    setupAdminPortal();
                 }
                 console.log(`Main: Opened ${portal} portal.`);
             } else {
