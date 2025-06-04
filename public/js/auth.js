@@ -1,6 +1,6 @@
 // public/js/auth.js
 
-// Firebase Imports
+// Import Firebase instances
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -128,7 +128,10 @@ onAuthStateChanged(auth, async (user) => {
         }
         console.log("Auth: Main content shown for authenticated user.");
 
-        const userProfileDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/profile/data/userProfile`);
+        // FIX: Corrected Firestore path for user profile
+        // The path should be: artifacts/{appId}/users/{userId}/profile/userProfile
+        // Removed the extra 'data' segment from the path here.
+        const userProfileDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/profile/userProfile`);
         try {
             const userProfileSnap = await getDoc(userProfileDocRef);
 
