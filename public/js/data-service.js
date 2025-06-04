@@ -9,9 +9,15 @@ import { collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, query, w
 function getCollectionPath(collectionName, userId = null) {
     if (userId) {
         // Private user-specific data
+        // FIX: Corrected path for user-specific collections.
+        // If collectionName is 'profile', we want 'artifacts/{appId}/users/{userId}/profile'
+        // Otherwise, it's 'artifacts/{appId}/users/{userId}/{collectionName}'
+        if (collectionName === 'profile') {
+            return `artifacts/${appId}/users/${userId}/profile`;
+        }
         return `artifacts/${appId}/users/${userId}/${collectionName}`;
     } else {
-        // Public or school-wide data (e.g., announcements, courses)
+        // Public or school-wide data (e.g., announcements, courses, students, teachers)
         return `artifacts/${appId}/public/data/${collectionName}`;
     }
 }
@@ -27,7 +33,8 @@ export async function getUserProfile(userId) {
         console.error("DataService: getUserProfile - userId is required.");
         return null;
     }
-    const userProfileDocRef = doc(db, getCollectionPath('profile/data', userId), 'userProfile');
+    // FIX: Corrected document reference to 'userProfile' directly under 'profile' collection
+    const userProfileDocRef = doc(db, getCollectionPath('profile', userId), 'userProfile');
     try {
         const docSnap = await getDoc(userProfileDocRef);
         if (docSnap.exists()) {
@@ -54,7 +61,8 @@ export async function setUserProfile(userId, profileData) {
         console.error("DataService: setUserProfile - userId and profileData are required.");
         return false;
     }
-    const userProfileDocRef = doc(db, getCollectionPath('profile/data', userId), 'userProfile');
+    // FIX: Corrected document reference to 'userProfile' directly under 'profile' collection
+    const userProfileDocRef = doc(db, getCollectionPath('profile', userId), 'userProfile');
     try {
         await setDoc(userProfileDocRef, profileData, { merge: true }); // Use merge to update existing fields
         console.log("DataService: User profile set/updated successfully for UID:", userId);
@@ -193,7 +201,8 @@ export async function addCourse(courseData) {
         const docRef = await addDoc(collection(db, getCollectionPath('courses')), courseData);
         console.log("DataService: Course added with ID:", docRef.id);
         return docRef.id;
-    } catch (error) {
+    }
+    catch (error) {
         console.error("DataService: Error adding course:", error);
         return null;
     }
