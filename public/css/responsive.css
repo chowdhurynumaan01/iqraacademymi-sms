@@ -1,0 +1,134 @@
+/* public/css/responsive.css */
+
+/* Responsive design rules using media queries */
+
+/* Small devices (phones, 640px and below) */
+@media (max-width: 640px) {
+    .sidebar {
+        width: 250px; /* Full width for mobile sidebar */
+        left: -250px; /* Hidden by default */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        border-radius: 0; /* No rounded corners on mobile sidebar */
+    }
+
+    .sidebar.active {
+        left: 0; /* Slide in when active */
+    }
+
+    .sidebar.collapsed {
+        width: 250px; /* On mobile, collapsed means full width but still hidden */
+    }
+
+    .sidebar.collapsed .nav-text,
+    .sidebar.collapsed .logo-text {
+        display: block; /* Always show text on mobile sidebar */
+    }
+
+    .sidebar.collapsed .nav-item {
+        justify-content: flex-start; /* Align items to start */
+    }
+
+    .main-content {
+        margin-left: 0; /* No left margin on mobile */
+        padding: 1rem; /* Smaller padding */
+    }
+
+    nav {
+        padding: 0.75rem; /* Smaller padding for top nav */
+    }
+
+    nav h1 {
+        font-size: 1rem; /* Smaller font size for title */
+    }
+
+    .portal-card,
+    .dashboard-card {
+        padding: 1rem; /* Smaller padding for cards */
+    }
+
+    .portal-card h3,
+    .dashboard-card h3 {
+        font-size: 1rem; /* Smaller heading size in cards */
+    }
+
+    .grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
+        grid-template-columns: 1fr; /* Single column layout for grids */
+    }
+
+    .program-tab {
+        font-size: 0.875rem; /* Smaller font for tabs */
+        padding: 0.5rem 0.75rem;
+    }
+
+    /* Modals should take more width on small screens */
+    .fixed.inset-0 > div {
+        width: 95%;
+        max-width: 95%;
+        margin: 1rem;
+    }
+}
+
+/* Medium devices (tablets, 641px to 768px) */
+@media (min-width: 641px) and (max-width: 768px) {
+    .sidebar {
+        width: 70px; /* Collapsed by default */
+        left: 0;
+        border-radius: 0 10px 10px 0;
+    }
+
+    .sidebar.collapsed .nav-text,
+    .sidebar.collapsed .logo-text {
+        display: none; /* Hide text when collapsed */
+    }
+
+    .sidebar.collapsed .nav-item {
+        justify-content: center; /* Center icons when collapsed */
+    }
+
+    .main-content {
+        margin-left: 70px; /* Adjust margin for collapsed sidebar */
+        padding: 1.5rem;
+    }
+
+    .main-content.expanded {
+        margin-left: 256px; /* Expand to full sidebar width */
+    }
+
+    .grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr); /* Two columns for grids */
+    }
+}
+
+/* Large devices (desktops, 769px and up) */
+@media (min-width: 769px) {
+    .sidebar {
+        width: 256px; /* Default expanded width */
+        left: 0;
+        border-radius: 0 10px 10px 0;
+    }
+
+    .sidebar.collapsed {
+        width: 70px; /* Collapsed width */
+    }
+
+    .sidebar.collapsed .nav-text,
+    .sidebar.collapsed .logo-text {
+        display: none; /* Hide text when collapsed */
+    }
+
+    .sidebar.collapsed .nav-item {
+        justify-content: center; /* Center icons when collapsed */
+    }
+
+    .main-content {
+        margin-left: 256px; /* Default margin for expanded sidebar */
+    }
+
+    .main-content.expanded {
+        margin-left: 70px; /* Adjust margin when sidebar is collapsed */
+    }
+
+    .grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
+        grid-template-columns: repeat(4, 1fr); /* Four columns for grids */
+    }
+}

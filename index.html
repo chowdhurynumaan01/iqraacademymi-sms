@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IQRA Academy of Michigan - School Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="public/css/main.css">
+    <link rel="stylesheet" href="public/css/components.css">
+    <link rel="stylesheet" href="public/css/responsive.css">
+</head>
+<body class="bg-gray-100 font-sans">
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[100] hidden">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+            <h2 class="text-2xl font-bold mb-6 text-center text-blue-600">Login to IQRA Academy</h2>
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                <input type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your email">
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your password">
+            </div>
+            <div id="loginMessage" class="text-red-500 text-sm mb-4 hidden"></div>
+            <button id="loginButton" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full">
+                Login with Email
+            </button>
+            <div class="mt-4 text-center">
+                <button id="googleSignInButton" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full flex items-center justify-center">
+                    <i class="fab fa-google mr-2"></i> Sign in with Google
+                </button>
+            </div>
+            <p class="text-center text-gray-600 text-sm mt-4">
+                Don't have an account? <a href="#" class="text-blue-600 hover:underline">Contact Admin</a>
+            </p>
+        </div>
+    </div>
+
+    <nav class="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center">
+        <div class="flex items-center">
+            <button id="sidebarToggle" class="mr-4 text-white focus:outline-none">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <h1 class="text-xl font-bold">IQRA Academy of Michigan</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="relative">
+                <button class="text-white focus:outline-none">
+                    <i class="fas fa-bell text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                </button>
+            </div>
+            <div class="relative">
+                <button id="userMenuButton" class="flex items-center focus:outline-none">
+                    <img src="https://via.placeholder.com/40" alt="User" class="rounded-full">
+                    <span class="ml-2 hidden md:inline" id="loggedInUserName">Guest User</span>
+                </button>
+                <div id="userMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-blue-100">Profile</a>
+                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-blue-100">Settings</a>
+                    <a href="#" id="logoutButton" class="block px-4 py-2 text-gray-800 hover:bg-blue-100">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="sidebar" class="sidebar bg-white h-screen w-64 shadow-md fixed overflow-y-auto">
+        <div class="p-4 flex items-center">
+            <img src="https://via.placeholder.com/40" alt="Logo" class="rounded-full">
+            <span class="logo-text ml-3 font-bold text-blue-600">IQRA Academy</span>
+        </div>
+        <hr>
+        <ul class="mt-4">
+            <li class="px-4 py-2">
+                <div class="relative">
+                    <input type="text" placeholder="Search..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                </div>
+            </li>
+            <li class="nav-item px-4 py-3 flex items-center text-gray-700 hover:bg-blue-50 rounded-lg mx-2">
+                <i class="fas fa-home text-blue-500"></i>
+                <span class="nav-text ml-3">Dashboard</span>
+            </li>
+            <li class="nav-item px-4 py-3 flex items-center text-gray-700 hover:bg-blue-50 rounded-lg mx-2">
+                <i class="fas fa-calendar-alt text-blue-500"></i>
+                <span class="nav-text ml-3">Calendar</span>
+            </li>
+            <li class="nav-item px-4 py-3 flex items-center text-gray-700 hover:bg-blue-50 rounded-lg mx-2">
+                <i class="fas fa-users text-blue-500"></i>
+                <span class="nav-text ml-3">Students</span>
+            </li>
+            <li class="nav-item px-4 py-3 flex items-center text-gray-700 hover:bg-blue-50 rounded-lg mx-2">
+                <i class="fas fa-chalkboard-teacher text-blue-500"></i>
+                <span class="nav-text ml-3">Teachers</span>
+            </li>
+            <li class="nav-item px-4 py-3 flex items-center text-gray-700 hover:bg-blue-50 rounded-lg mx-2">
+                <i class="fas fa-book text-blue-500"></i>
+                <span class="nav-text ml-3">Courses</span>
+            </li>
+            <li class="nav-item px-4 py-3 flex items-center text-gray-700 hover:bg-blue-50 rounded-lg mx-2">
+                <i class="fas fa-clipboard-list text-blue-500"></i>
+                <span class="nav-text ml-3">Attendance</span>
+            </li>
+            <li class="nav-item px-4 py-3 flex items-center text-gray-700 hover:bg-blue-50 rounded-lg mx-2">
+                <i class="fas fa-file-invoice-dollar text-blue-500"></i>
+                <span class="nav-text ml-3">Finance</span>
+            </li>
+            <li class="nav-item px-4 py-3 flex items-center text-gray-700 hover:bg-blue-50 rounded-lg mx-2">
+                <i class="fas fa-envelope text-blue-500"></i>
+                <span class="nav-text ml-3">Messages</span>
+                <span class="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">5</span>
+            </li>
+            <li class="nav-item px-4 py-3 flex items-center text-gray-700 hover:bg-blue-50 rounded-lg mx-2">
+                <i class="fas fa-cog text-blue-500"></i>
+                <span class="nav-text ml-3">Settings</span>
+            </li>
+        </ul>
+        <div class="absolute bottom-0 w-full p-4 bg-gray-50">
+            <div class="flex items-center">
+                <img src="https://via.placeholder.com/40" alt="User" class="rounded-full">
+                <div class="ml-3">
+                    <p class="text-sm font-medium" id="sidebarUserName">Guest User</p>
+                    <p class="text-xs text-gray-500" id="sidebarUserRole">Not Logged In</p>
+                    <p class="text-xs text-gray-500 break-all" id="userIdDisplay"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainContent" class="main-content ml-64 p-6 transition-all duration-300 hidden">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Select Portal</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="portal-card bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-6 cursor-pointer transform transition duration-300 hover:scale-105" data-portal="student">
+                    <div class="flex items-center">
+                        <i class="fas fa-user-graduate text-3xl"></i>
+                        <h3 class="ml-3 text-lg font-semibold">Student Portal</h3>
+                    </div>
+                    <p class="mt-2 text-sm opacity-90">Access courses, assignments, grades, and more.</p>
+                </div>
+                <div class="portal-card bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg p-6 cursor-pointer transform transition duration-300 hover:scale-105" data-portal="parent">
+                    <div class="flex items-center">
+                        <i class="fas fa-user-friends text-3xl"></i>
+                        <h3 class="ml-3 text-lg font-semibold">Parent Portal</h3>
+                    </div>
+                    <p class="mt-2 text-sm opacity-90">Monitor your child's progress and school activities.</p>
+                </div>
+                <div class="portal-card bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg p-6 cursor-pointer transform transition duration-300 hover:scale-105" data-portal="teacher">
+                    <div class="flex items-center">
+                        <i class="fas fa-chalkboard-teacher text-3xl"></i>
+                        <h3 class="ml-3 text-lg font-semibold">Teacher Portal</h3>
+                    </div>
+                    <p class="mt-2 text-sm opacity-90">Manage classes, attendance, and student evaluations.</p>
+                </div>
+                <div class="portal-card bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg p-6 cursor-pointer transform transition duration-300 hover:scale-105" data-portal="admin">
+                    <div class="flex items-center">
+                        <i class="fas fa-user-shield text-3xl"></i>
+                        <h3 class="ml-3 text-lg font-semibold">Admin Portal</h3>
+                    </div>
+                    <p class="mt-2 text-sm opacity-90">Full system access for school administration.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">School Programs</h2>
+            <div class="flex flex-wrap border-b border-gray-200 mb-4">
+                <button class="program-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-500 active-tab" data-program="weekend">Weekend School</button>
+                <button class="program-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-500" data-program="summer">Summer School</button>
+                <button class="program-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-500" data-program="evening">Evening School</button>
+                <button class="program-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-500" data-program="fulltime">Full Time School</button>
+            </div>
+            <div class="program-content">
+                <div class="program-details" id="weekend-school-details">
+                    <h3 class="text-lg font-semibold mb-2">Weekend School</h3>
+                    <p class="text-gray-700 mb-4">Our weekend program runs every Saturday and Sunday from 10:00 AM to 2:00 PM.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-blue-700 mb-2">Curriculum</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-600">
+                                <li>Quranic Studies</li>
+                                <li>Islamic Studies</li>
+                                <li>Arabic Language</li>
+                                <li>Islamic History</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-green-700 mb-2">Features</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-600">
+                                <li>Small class sizes</li>
+                                <li>Experienced teachers</li>
+                                <li>Interactive learning</li>
+                                <li>Progress tracking</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="program-details hidden" id="summer-school-details">
+                    <h3 class="text-lg font-semibold mb-2">Summer School</h3>
+                    <p class="text-gray-700 mb-4">Our summer program runs Monday to Thursday, from 10:00 AM - 2:00 PM and 4:00 PM - 8:00 PM.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-blue-700 mb-2">Curriculum</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-600">
+                                <li>Intensive Quran Memorization</li>
+                                <li>Advanced Arabic Grammar</li>
+                                <li>Prophetic Biography</li>
+                                <li>Leadership & Character Building</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-green-700 mb-2">Features</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-600">
+                                <li>Accelerated learning pace</li>
+                                <li>Project-based activities</li>
+                                <li>Outdoor recreation</li>
+                                <li>Field trips</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="program-details hidden" id="evening-school-details">
+                    <h3 class="text-lg font-semibold mb-2">Evening School</h3>
+                    <p class="text-gray-700 mb-4">Our evening program runs from 6:00 PM - 8:00 PM, Sunday to Thursday (except during summer).</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-blue-700 mb-2">Curriculum</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-600">
+                                <li>Quran Recitation & Tajweed</li>
+                                <li>Basic Islamic Etiquette</li>
+                                <li>Seerah Studies</li>
+                                <li>Farsi/Urdu Language (Optional)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-green-700 mb-2">Features</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-600">
+                                <li>Flexible schedule</li>
+                                <li>Adult classes available</li>
+                                <li>Community engagement</li>
+                                <li>Homework support</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="program-details hidden" id="fulltime-school-details">
+                    <h3 class="text-lg font-semibold mb-2">Full Time School</h3>
+                    <p class="text-gray-700 mb-4">Our full-time program runs from 8:00 AM - 4:00 PM, Monday to Friday (except during summer).</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-blue-700 mb-2">Curriculum</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-600">
+                                <li>Comprehensive Islamic & Academic Curriculum</li>
+                                <li>Science, Math, English, Social Studies</li>
+                                <li>Advanced Quranic & Arabic Studies</li>
+                                <li>Physical Education & Arts</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-green-700 mb-2">Features</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-600">
+                                <li>Accredited program</li>
+                                <li>Qualified diverse faculty</li>
+                                <li>Technology integrated learning</li>
+                                <li>Counseling services</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div class="dashboard-card bg-white rounded-lg shadow-md p-6 transition duration-300">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <i class="fas fa-users text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">Total Students</p>
+                        <h3 class="text-2xl font-bold">1,248</h3>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-green-600 font-medium">
+                    <i class="fas fa-arrow-up"></i> 12% from last month
+                </div>
+            </div>
+            <div class="dashboard-card bg-white rounded-lg shadow-md p-6 transition duration-300">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                        <i class="fas fa-chalkboard-teacher text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">Total Teachers</p>
+                        <h3 class="text-2xl font-bold">48</h3>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-green-600 font-medium">
+                    <i class="fas fa-arrow-up"></i> 3 new hires
+                </div>
+            </div>
+            <div class="dashboard-card bg-white rounded-lg shadow-md p-6 transition duration-300">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <i class="fas fa-book text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">Courses Offered</p>
+                        <h3 class="text-2xl font-bold">32</h3>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-blue-600 font-medium">
+                    <i class="fas fa-info-circle"></i> 4 new this semester
+                </div>
+            </div>
+            <div class="dashboard-card bg-white rounded-lg shadow-md p-6 transition duration-300">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                        <i class="fas fa-calendar-check text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">Attendance Today</p>
+                        <h3 class="text-2xl font-bold">94%</h3>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-red-600 font-medium">
+                    <i class="fas fa-arrow-down"></i> 2% below average
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Recent Activities</h2>
+                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <div class="p-2 rounded-full bg-blue-100 text-blue-600 mr-3">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm"><span class="font-medium">12 new students</span> enrolled in Weekend School program</p>
+                        <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="p-2 rounded-full bg-green-100 text-green-600 mr-3">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm">Teacher <span class="font-medium">Mr. Ahmed</span> submitted grades for <span class="font-medium">Quranic Studies 101</span></p>
+                        <p class="text-xs text-gray-500 mt-1">5 hours ago</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="p-2 rounded-full bg-purple-100 text-purple-600 mr-3">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm">New event added: <span class="font-medium">Parent-Teacher Conference</span> on June 15th</p>
+                        <p class="text-xs text-gray-500 mt-1">Yesterday</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="p-2 rounded-full bg-yellow-100 text-yellow-600 mr-3">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm"><span class="font-medium">3 students</span> have overdue tuition payments</p>
+                        <p class="text-xs text-gray-500 mt-1">Yesterday</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Upcoming Events</h2>
+                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View Calendar</button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-start p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition">
+                    <div class="bg-blue-600 text-white rounded-lg p-2 text-center mr-3 min-w-[60px]">
+                        <div class="text-sm font-bold">JUN</div>
+                        <div class="text-xl font-bold">15</div>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-medium">Parent-Teacher Conference</h3>
+                        <p class="text-sm text-gray-600">4:00 PM - 7:00 PM | School Auditorium</p>
+                    </div>
+                    <button class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+                <div class="flex items-start p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition">
+                    <div class="bg-green-600 text-white rounded-lg p-2 text-center mr-3 min-w-[60px]">
+                        <div class="text-sm font-bold">JUN</div>
+                        <div class="text-xl font-bold">20</div>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-medium">Summer School Begins</h3>
+                        <p class="text-sm text-gray-600">10:00 AM - 2:00 PM | All Classes</p>
+                    </div>
+                    <button class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+                <div class="flex items-start p-3 border border-gray-200 rounded-lg hover:bg-blue-50 transition">
+                    <div class="bg-purple-600 text-white rounded-lg p-2 text-center mr-3 min-w-[60px]">
+                        <div class="text-sm font-bold">JUL</div>
+                        <div class="text-xl font-bold">4</div>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-medium">Independence Day - School Closed</h3>
+                        <p class="text-sm text-gray-600">All Day</p>
+                    </div>
+                    <button class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="studentPortalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b p-4">
+                <h3 class="text-xl font-bold">Student Portal</h3>
+                <button id="closeStudentPortal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-book-open text-blue-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">My Courses</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View your current courses and materials</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg cursor-pointer hover:bg-green-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-clipboard-list text-green-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Assignments</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View and submit your assignments</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg cursor-pointer hover:bg-purple-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-chart-bar text-purple-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Grades</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Check your grades and progress</p>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded-lg cursor-pointer hover:bg-yellow-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt text-yellow-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Schedule</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View your class schedule</p>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-lg cursor-pointer hover:bg-red-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-user-clock text-red-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Attendance</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View your attendance record</p>
+                    </div>
+                    <div class="bg-indigo-50 p-4 rounded-lg cursor-pointer hover:bg-indigo-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-invoice-dollar text-indigo-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Tuition</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View and pay tuition fees</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-lg shadow-sm mb-6">
+                    <div class="border-b p-4">
+                        <h4 class="font-medium">Upcoming Assignments</h4>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between py-3 border-b">
+                            <div>
+                                <h5 class="font-medium">Quran Memorization - Surah Al-Baqarah (1-10)</h5>
+                                <p class="text-sm text-gray-600">Due: June 18, 2023</p>
+                            </div>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Pending</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b">
+                            <div>
+                                <h5 class="font-medium">Islamic Studies - Essay on Prophets</h5>
+                                <p class="text-sm text-gray-600">Due: June 20, 2023</p>
+                            </div>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">In Progress</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3">
+                            <div>
+                                <h5 class="font-medium">Arabic Language - Worksheet 5</h5>
+                                <p class="text-sm text-gray-600">Due: June 22, 2023</p>
+                            </div>
+                            <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">Not Started</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-lg shadow-sm">
+                    <div class="border-b p-4">
+                        <h4 class="font-medium">Recent Grades</h4>
+                    </div>
+                    <div class="p-4">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="text-left py-2 px-1">Course</th>
+                                        <th class="text-left py-2 px-1">Assignment</th>
+                                        <th class="text-left py-2 px-1">Grade</th>
+                                        <th class="text-left py-2 px-1">Feedback</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b">
+                                        <td class="py-2 px-1">Quranic Studies</td>
+                                        <td class="py-2 px-1">Surah Al-Fatihah Recitation</td>
+                                        <td class="py-2 px-1">A</td>
+                                        <td class="py-2 px-1">Excellent tajweed!</td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-2 px-1">Islamic Studies</td>
+                                        <td class="py-2 px-1">Five Pillars Quiz</td>
+                                        <td class="py-2 px-1">B+</td>
+                                        <td class="py-2 px-1">Good effort, review prayer times</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-1">Arabic Language</td>
+                                        <td class="py-2 px-1">Vocabulary Test 3</td>
+                                        <td class="py-2 px-1">A-</td>
+                                        <td class="py-2 px-1">Great improvement!</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="parentPortalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b p-4">
+                <h3 class="text-xl font-bold">Parent Portal</h3>
+                <button id="closeParentPortal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Student</label>
+                    <select class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Mohammed Ali (Grade 5)</option>
+                        <option>Aisha Ali (Grade 3)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-chart-line text-blue-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Progress Report</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View academic progress and performance</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg cursor-pointer hover:bg-green-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-user-clock text-green-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Attendance</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Check attendance records</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg cursor-pointer hover:bg-purple-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-invoice-dollar text-purple-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Tuition</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View and pay tuition fees</p>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded-lg cursor-pointer hover:bg-yellow-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt text-yellow-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">School Calendar</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View important dates and events</p>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-lg cursor-pointer hover:bg-red-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-red-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Messages</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Communicate with teachers</p>
+                    </div>
+                    <div class="bg-indigo-50 p-4 rounded-lg cursor-pointer hover:bg-indigo-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-book text-indigo-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Curriculum</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View course curriculum</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-lg shadow-sm mb-6">
+                    <div class="border-b p-4">
+                        <h4 class="font-medium">Attendance Summary (Last 30 Days)</h4>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <p class="text-sm text-gray-600">Present</p>
+                                <h3 class="text-2xl font-bold text-green-600">22</h3>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Absent</p>
+                                <h3 class="text-2xl font-bold text-red-600">1</h3>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Late</p>
+                                <h3 class="text-2xl font-bold text-yellow-600">2</h3>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Attendance Rate</p>
+                                <h3 class="text-2xl font-bold text-blue-600">88%</h3>
+                            </div>
+                        </div>
+                        <div class="h-48">
+                            <div class="bg-gray-100 rounded-lg h-full flex items-center justify-center text-gray-400">
+                                Attendance Chart Visualization
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-lg shadow-sm">
+                    <div class="border-b p-4">
+                        <h4 class="font-medium">Recent Grades</h4>
+                    </div>
+                    <div class="p-4">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="text-left py-2 px-1">Course</th>
+                                        <th class="text-left py-2 px-1">Assignment</th>
+                                        <th class="text-left py-2 px-1">Grade</th>
+                                        <th class="text-left py-2 px-1">Class Avg.</th>
+                                        <th class="text-left py-2 px-1">Feedback</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b">
+                                        <td class="py-2 px-1">Quranic Studies</td>
+                                        <td class="py-2 px-1">Surah Al-Fatihah Recitation</td>
+                                        <td class="py-2 px-1">A</td>
+                                        <td class="py-2 px-1">B+</td>
+                                        <td class="py-2 px-1">Excellent tajweed!</td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-2 px-1">Islamic Studies</td>
+                                        <td class="py-2 px-1">Five Pillars Quiz</td>
+                                        <td class="py-2 px-1">B+</td>
+                                        <td class="py-2 px-1">B</td>
+                                        <td class="py-2 px-1">Good effort, review prayer times</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-1">Arabic Language</td>
+                                        <td class="py-2 px-1">Vocabulary Test 3</td>
+                                        <td class="py-2 px-1">A-</td>
+                                        <td class="py-2 px-1">B+</td>
+                                        <td class="py-2 px-1">Great improvement!</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="teacherPortalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b p-4">
+                <h3 class="text-xl font-bold">Teacher Portal</h3>
+                <button id="closeTeacherPortal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-chalkboard text-blue-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">My Classes</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View and manage your classes</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg cursor-pointer hover:bg-green-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-clipboard-check text-green-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Attendance</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Take and manage attendance</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg cursor-pointer hover:bg-purple-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-tasks text-purple-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Assignments</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Create and grade assignments</p>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded-lg cursor-pointer hover:bg-yellow-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-chart-bar text-yellow-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Gradebook</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Enter and manage grades</p>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-lg cursor-pointer hover:bg-red-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-red-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Students</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">View student profiles</p>
+                    </div>
+                    <div class="bg-indigo-50 p-4 rounded-lg cursor-pointer hover:bg-indigo-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-indigo-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Messages</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Communicate with students and parents</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-lg shadow-sm mb-6">
+                    <div class="border-b p-4">
+                        <h4 class="font-medium">My Current Classes</h4>
+                    </div>
+                    <div class="p-4">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="text-left py-2 px-1">Class Name</th>
+                                        <th class="text-left py-2 px-1">Students</th>
+                                        <th class="text-left py-2 px-1">Schedule</th>
+                                        <th class="text-left py-2 px-1">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b">
+                                        <td class="py-2 px-1">Quranic Studies 101</td>
+                                        <td class="py-2 px-1">25</td>
+                                        <td class="py-2 px-1">Sat, Sun 10AM-12PM</td>
+                                        <td class="py-2 px-1">
+                                            <button class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-2 px-1">Islamic History 201</td>
+                                        <td class="py-2 px-1">20</td>
+                                        <td class="py-2 px-1">Mon, Wed 6PM-8PM</td>
+                                        <td class="py-2 px-1">
+                                            <button class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-1">Arabic Language I</td>
+                                        <td class="py-2 px-1">28</td>
+                                        <td class="py-2 px-1">Tue, Thu 4PM-6PM</td>
+                                        <td class="py-2 px-1">
+                                            <button class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-lg shadow-sm">
+                    <div class="border-b p-4">
+                        <h4 class="font-medium">Pending Assignments to Grade</h4>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between py-3 border-b">
+                            <div>
+                                <h5 class="font-medium">Quran Memorization - Surah Al-Kahf</h5>
+                                <p class="text-sm text-gray-600">Class: Quranic Studies 101</p>
+                            </div>
+                            <button class="bg-blue-500 text-white text-xs px-3 py-1 rounded hover:bg-blue-600">Grade</button>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b">
+                            <div>
+                                <h5 class="font-medium">Research Paper - Islamic Golden Age</h5>
+                                <p class="text-sm text-gray-600">Class: Islamic History 201</p>
+                            </div>
+                            <button class="bg-blue-500 text-white text-xs px-3 py-1 rounded hover:bg-blue-600">Grade</button>
+                        </div>
+                        <div class="flex items-center justify-between py-3">
+                            <div>
+                                <h5 class="font-medium">Dialogue Practice - Introductions</h5>
+                                <p class="text-sm text-gray-600">Class: Arabic Language I</p>
+                            </div>
+                            <button class="bg-blue-500 text-white text-xs px-3 py-1 rounded hover:bg-blue-600">Grade</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminPortalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b p-4">
+                <h3 class="text-xl font-bold">Admin Portal</h3>
+                <button id="closeAdminPortal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-users-cog text-blue-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Manage Users</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Add, edit, or remove student, parent, teacher, and admin accounts.</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg cursor-pointer hover:bg-green-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-book-reader text-green-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Manage Courses</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Create, update, and assign courses to teachers.</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg cursor-pointer hover:bg-purple-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-dollar-sign text-purple-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Financial Management</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Handle tuition fees, expenses, and financial reports.</p>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded-lg cursor-pointer hover:bg-yellow-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-chart-line text-yellow-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Generate Reports</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Generate attendance, grade, and performance reports.</p>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-lg cursor-pointer hover:bg-red-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-cogs text-red-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">System Settings</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Configure school year, holidays, and system preferences.</p>
+                    </div>
+                    <div class="bg-indigo-50 p-4 rounded-lg cursor-pointer hover:bg-indigo-100 transition">
+                        <div class="flex items-center">
+                            <i class="fas fa-bell text-indigo-600 text-2xl mr-3"></i>
+                            <h4 class="font-medium">Announcements</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Create and manage school-wide announcements.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-lg shadow-sm mb-6">
+                    <div class="border-b p-4">
+                        <h4 class="font-medium">System Overview</h4>
+                    </div>
+                    <div class="p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h5 class="font-medium text-gray-700 mb-2">Total Active Users by Role</h5>
+                                <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+                                    User Role Chart (Placeholder)
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="font-medium text-gray-700 mb-2">Enrollment Trends (Last 6 Months)</h5>
+                                <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+                                    Enrollment Trend Chart (Placeholder)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-lg shadow-sm">
+                    <div class="border-b p-4">
+                        <h4 class="font-medium">Quick Actions</h4>
+                    </div>
+                    <div class="p-4 flex flex-wrap gap-4">
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                            <i class="fas fa-user-plus mr-2"></i> Add New Student
+                        </button>
+                        <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                            <i class="fas fa-chalkboard-teacher mr-2"></i> Add New Teacher
+                        </button>
+                        <button class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition">
+                            <i class="fas fa-book mr-2"></i> Create New Course
+                        </button>
+                        <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition">
+                            <i class="fas fa-calendar-plus mr-2"></i> Schedule Event
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="public/js/auth.js"></script>
+    <script type="module" src="public/js/main.js"></script>
+</body>
+</html>
